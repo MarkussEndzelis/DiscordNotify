@@ -1,20 +1,20 @@
 import tkinter as tk
 import threading
+import settings
 
 class Overlay:
-    def __init__(self):
-        self.root = tk.Tk()
+    def __init__(self, root):
+        self.root = tk.Toplevel(root)
         self.root.overrideredirect(True)
         self.root.attributes("-topmost", True)
         self.root.attributes("-transparentcolor", "black")
         self.root.configure(bg="black")
         self.root.geometry("400x300+100+100")
-        self.root.lift()
-        self.root.focus_force()
         self.messages = []
         self.lock = threading.Lock()
 
     def set_position(self, position):
+        self.root.update_idletasks()
         sw = self.root.winfo_screenwidth()
         sh = self.root.winfo_screenheight()
         if position == "top-right":
@@ -32,9 +32,9 @@ class Overlay:
                 label = tk.Label(
                     self.root,
                     text=f"{author}: {content}",
-                    fg="white",
+                    fg=settings.get("text_color"),
                     bg="black",
-                    font=("Segoe UI", 13),
+                    font=("Segoe UI", settings.get("text_size")),
                     wraplength=380,
                     justify="left"
                 )
@@ -52,4 +52,3 @@ class Overlay:
     def run(self):
         from settings import get
         self.set_position(get("position"))
-        self.root.mainloop()
