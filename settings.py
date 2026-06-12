@@ -1,7 +1,13 @@
 import json
 import os
+import sys
 
-CONFIG_FILE = "config.json"
+if getattr(sys, 'frozen', False):
+      BASE_DIR = os.path.dirname(sys.executable)
+else:
+      BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
 
 def load():
     with open(CONFIG_FILE, "r") as f:
