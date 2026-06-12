@@ -67,11 +67,28 @@ class ControlPanel:
         frame = tk.Frame(self.win, bg="#1e1e2e")
         frame.pack(anchor="w", padx=30, pady=(2, 8))
         self.var_text_color = tk.StringVar(value=cfg.get("text_color", "#ffffff"))
-        colors = ["#ffffff", "#ffd700", "#00cfff", "#ff6b6b", "#2ed573"]
+        colors = ["#ffffff", "#aaaaaa", "#ffd700", "#00cfff", "#ff6b6b", "#2ed573"]
         for c in colors:
-            tk.Button(frame, bg=c, width=2, height=1, borderwidth=0,
-                      cursor="hand2",
-                      command=lambda col=c: self.var_text_color.set(col)).pack(side="left", padx=2)
+            is_selected = c == self.var_text_color.get()
+            btn = tk.Button(frame, bg=c, width=2, height=1,
+                            borderwidth=3 if is_selected else 0,
+                            relief="solid" if is_selected else "flat",
+                            cursor="hand2",
+                            command=lambda col=c: [self.var_text_color.set(col), self._refresh_colors(frame, colors)])
+            btn.pack(side="left", padx=2)
+
+    def _refresh_colors(self, frame, colors):
+        for widget in frame.winfo_children():
+            widget.destroy()
+        for c in colors:
+            is_selected = c == self.var_text_color.get()
+            btn = tk.Button(frame, bg=c, width=2, height=1,
+                            borderwidth=3 if is_selected else 0,
+                            relief="solid" if is_selected else "flat",
+                            cursor="hand2",
+                            command=lambda col=c: [self.var_text_color.set(col), self._refresh_colors(frame, colors)])
+            btn.pack(side="left", padx=2)
+            
 
     def _size_row(self, cfg):
         tk.Label(self.win, text="Text Size:", fg="#a0a0b0", bg="#1e1e2e",
