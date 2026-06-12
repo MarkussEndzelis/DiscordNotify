@@ -4,6 +4,9 @@ import tkinter as tk
 from tkinter import ttk
 import settings
 from overlay import Overlay
+import pystray
+from pystray import MenuItem as item
+from PIL import Image, ImageDraw
 
 overlay = Overlay()
 
@@ -49,7 +52,7 @@ def launch_settings_window():
 
     def label(text, row):
         tk.Label(win, text=text, fg="white", bg="#1e1e2e", 
-                 font=("Segoe UI", 11)).grid(row=row, column=0, padx=20, pady=8, sticky="w")
+            font=("Segoe UI", 11)).grid(row=row, column=0, padx=20, pady=8, sticky="w")
         
     label("Bot Token:", 0)
     token_var = tk.StringVar(value=cfg["token"])
@@ -86,6 +89,22 @@ def launch_settings_window():
               bg="#5865f2", fg="white", font=("Segoe UI", 11),
               padx=20, pady=6).grid(row=5, column=0, columnspan=2, pady=20)
     
+def create_tray_icon():
+    img = Image.new("RGB", (64, 64), color="#5865f2")
+    draw = ImageDraw.Draw(img)
+    draw.ellipse([16, 16, 48, 48], fill="white")
+
+    def quit_app(icon, item):
+        icon.stop()
+        overlay.root.quit()
+
+    menu = pystray.Menu(
+        item("Settings", lambda icon, item: overlay.root.after(0, launch_settings_window)),
+        item("Quit", quit_app)
+    )
+    icon = pystray.Icon("DcNotify", img, "DcNotify", menu)
+    icon.run()
+    
 btn = tk.Button(
     overlay.root,
     text="⚙",
@@ -97,10 +116,12 @@ btn = tk.Button(
     cursor="hand2"
 )
 btn.place(relx=1.0, rely=0.0, anchor="ne")
-overlay.show_message("Test", "Hello this is a test message", 5)
 
 bot_thread = threading.Thread(target=start_bot, daemon=True)
 bot_thread.start()
+
+tray_thread = threading.Thread(target=create_tray_icon, daemon=True)
+tray_thread.start()
 
 overlay.run()
         
