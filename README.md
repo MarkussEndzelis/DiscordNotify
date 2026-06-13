@@ -10,8 +10,7 @@ Windows desktop overlay that shows Discord server messages on your screen.
 - Toggle server notifications on or off
 
 ## How to use
-1. Download DcNotify.exe and config.json from Releases
-2. Put both files in the same folder ( you can name folder whatever you want)
+1. Download DcNotify.exe from Releases
 3. Create a Discord bot at discord.com/developers/applications
 4. Go to QAuth2 and in OAuth2 URL Generator choose bot
 5. In Bot Permissions choose Administrator
